@@ -1,5 +1,5 @@
 // 활동지 파일을 저장해 두고 인터넷 없이도 열리게 하는 서비스 워커입니다.
-const CACHE = "ss-v2";
+const CACHE = "ss-v3";
 const FILES = ["./", "index.html", "manifest.json",
   ...["header", "theme1", "theme2", "symbol", "doing", "first", "learned", "body", "practice"].map(n => "images/" + n + ".jpg"),
   "images/icon-192.png", "images/icon-512.png"];
