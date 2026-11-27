@@ -35,18 +35,18 @@ function save(){try{const data={};fields.forEach(el=>{const k=el.id||el.name;if(
 document.addEventListener("input",save);document.addEventListener("change",save);
 const bankOf=g=>document.querySelector('.bank[data-group="'+g+'"]');
 function sync(g){document.querySelectorAll('.slot[data-group="'+g+'"]').forEach(sl=>{const c=sl.querySelector(".chip");document.getElementById(sl.dataset.for).value=c?c.dataset.v:""});save()}
+function follow(e,move,end){const id=e.pointerId;const mv=ev=>{if(ev.pointerId===id)move(ev)};const up=ev=>{if(ev.pointerId!==id)return;document.removeEventListener("pointermove",mv);document.removeEventListener("pointerup",up);document.removeEventListener("pointercancel",up);end(ev,ev.type==="pointercancel")};document.addEventListener("pointermove",mv);document.addEventListener("pointerup",up);document.addEventListener("pointercancel",up)}
 const svg=document.querySelector("#lineSvg"),box=document.querySelector(".lines");
 const pt=el=>{const b=box.getBoundingClientRect(),d=el.querySelector(".dot").getBoundingClientRect();return[d.left+d.width/2-b.left,d.top+d.height/2-b.top]};
 function ln(a,c,col){return'<line x1="'+a[0]+'" y1="'+a[1]+'" x2="'+c[0]+'" y2="'+c[1]+'" stroke="'+col+'" stroke-width="3" stroke-linecap="round"/>'}
 function draw(tmp){let h="";document.querySelectorAll("#matching .l").forEach(l=>{const v=l.querySelector("input").value,r=v&&document.querySelector('.r[data-v="'+v+'"]');if(r)h+=ln(pt(l),pt(r),"#2f8f9d")});if(tmp)h+=tmp;svg.innerHTML=h}
-document.querySelectorAll("#matching .l").forEach(l=>{l.addEventListener("pointerdown",e=>{e.preventDefault();l.setPointerCapture(e.pointerId);const inp=l.querySelector("input");inp.value="";const b=box.getBoundingClientRect();let hit=null;
+document.querySelectorAll("#matching .l").forEach(l=>{l.addEventListener("pointerdown",e=>{e.preventDefault();const inp=l.querySelector("input");inp.value="";const b=box.getBoundingClientRect();let hit=null;
 const at=ev=>{const t=document.elementFromPoint(ev.clientX,ev.clientY);return t&&t.closest(".r")};
-l.onpointermove=ev=>{if(hit)hit.classList.remove("hit");hit=at(ev);if(hit)hit.classList.add("hit");draw(ln(pt(l),[ev.clientX-b.left,ev.clientY-b.top],"#f28c38"))};
-l.onpointerup=ev=>{l.onpointermove=l.onpointerup=null;if(hit)hit.classList.remove("hit");const r=at(ev);if(r){document.querySelectorAll("#matching input").forEach(o=>{if(o.value===r.dataset.v)o.value=""});inp.value=r.dataset.v}save();draw()}})});
+follow(e,ev=>{if(hit)hit.classList.remove("hit");hit=at(ev);if(hit)hit.classList.add("hit");draw(ln(pt(l),[ev.clientX-b.left,ev.clientY-b.top],"#f28c38"))},(ev,cancel)=>{if(hit)hit.classList.remove("hit");const r=!cancel&&at(ev);if(r){document.querySelectorAll("#matching input").forEach(o=>{if(o.value===r.dataset.v)o.value=""});inp.value=r.dataset.v}save();draw()})})});
 draw();addEventListener("resize",()=>draw());
 document.querySelectorAll(".slot").forEach(sl=>{const v=document.getElementById(sl.dataset.for).value;const c=v&&[...bankOf(sl.dataset.group).children].find(c=>c.dataset.v===v);if(c)sl.append(c)});
-document.querySelectorAll(".chip").forEach(chip=>{chip.addEventListener("pointerdown",e=>{e.preventDefault();chip.setPointerCapture(e.pointerId);const r=chip.getBoundingClientRect(),dx=e.clientX-r.left,dy=e.clientY-r.top;chip.classList.add("dragging");chip.style.width=r.width+"px";const move=ev=>{chip.style.left=ev.clientX-dx+"px";chip.style.top=ev.clientY-dy+"px"};move(e);
-chip.onpointermove=move;chip.onpointerup=ev=>{chip.onpointermove=chip.onpointerup=null;chip.classList.remove("dragging");chip.style.cssText="";chip.hidden=true;const t=document.elementFromPoint(ev.clientX,ev.clientY);chip.hidden=false;const g=chip.closest("[data-group]").dataset.group;const sl=t&&t.closest('.slot[data-group="'+g+'"]');
-if(sl){const old=sl.querySelector(".chip");if(old&&old!==chip)chip.parentNode.append(old);sl.append(chip)}else if(t&&t.closest('.bank[data-group="'+g+'"]'))bankOf(g).append(chip);sync(g)}})});
+document.querySelectorAll(".chip").forEach(chip=>{chip.addEventListener("pointerdown",e=>{e.preventDefault();const r=chip.getBoundingClientRect(),dx=e.clientX-r.left,dy=e.clientY-r.top;chip.classList.add("dragging");chip.style.width=r.width+"px";const move=ev=>{chip.style.left=ev.clientX-dx+"px";chip.style.top=ev.clientY-dy+"px"};move(e);
+follow(e,move,(ev,cancel)=>{chip.classList.remove("dragging");chip.style.cssText="";chip.style.visibility="hidden";const t=!cancel&&document.elementFromPoint(ev.clientX,ev.clientY);chip.style.visibility="";const g=chip.closest("[data-group]").dataset.group;const sl=t&&t.closest('.slot[data-group="'+g+'"]');
+if(sl){const old=sl.querySelector(".chip");if(old&&old!==chip)chip.parentNode.append(old);sl.append(chip)}else if(t&&t.closest('.bank[data-group="'+g+'"]'))bankOf(g).append(chip);sync(g)})})});
 if("serviceWorker"in navigator)navigator.serviceWorker.register("sw.js");
 </script></body></html>
