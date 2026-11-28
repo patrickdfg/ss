@@ -4,6 +4,12 @@ const WEEKS = [
   {date: "2026-11-22", title: "내게 배워라, 달고 오묘한 말씀"},
 ];
 
+// 각 주 활동지는 그 주일 오전 11시(한국 시간)부터 기본 화면이 됩니다.
+function currentWeek(now = Date.now()) {
+  const started = WEEKS.filter(w => Date.parse(w.date + "T11:00:00+09:00") <= now);
+  return (started[0] || WEEKS[WEEKS.length - 1]).date;
+}
+
 if (typeof document !== "undefined") {
   const sel = document.querySelector("#weekSel");
   if (sel) {

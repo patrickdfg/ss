@@ -4,5 +4,5 @@
 <style>body{margin:0;background:#2f8f9d;color:#fff;font-family:system-ui,-apple-system,"맑은 고딕",sans-serif;display:grid;place-items:center;min-height:100vh}a{color:#ffe08a}</style></head>
 <body><p>활동지를 여는 중… <a id="go" href="2026-11-29.html">열리지 않으면 누르세요</a></p>
 <script src="weeks.js"></script>
-<script>document.querySelector("#go").href=WEEKS[0].date+".html";location.replace(WEEKS[0].date+".html");</script>
+<script>const page=currentWeek()+".html";document.querySelector("#go").href=page;location.replace(page);</script>
 </body></html>
