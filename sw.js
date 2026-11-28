@@ -1,6 +1,6 @@
 // 활동지 파일을 저장해 두고 인터넷 없이도 열리게 하는 서비스 워커입니다.
 importScripts("weeks.js");
-const CACHE = "ss-v9";
+const CACHE = "ss-v10";
 // 주차 페이지는 weeks.js 목록에서 가져오고, 그림은 처음 열 때 저장됩니다.
 const FILES = ["./", "index.html", "weeks.js", "check.js", "manifest.json",
   ...WEEKS.map(w => w.date + ".html"),
